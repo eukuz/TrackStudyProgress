@@ -37,11 +37,11 @@ namespace TrackStudyProgress
             }
             File.WriteAllLines(path, lines);
         }
-        static public async Task WriteToDB(string data)
+        static public void WriteToDB(string data)
         {
             using (StreamWriter streamWriter = new StreamWriter(path, true))
             {
-                await streamWriter.WriteLineAsync(data);
+                streamWriter.WriteLine(data);
             }
         }
         static public List<string> ReadFromDB()

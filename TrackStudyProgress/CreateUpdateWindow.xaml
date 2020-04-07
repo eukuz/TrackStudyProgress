@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TrackStudyProgress"
         mc:Ignorable="d"
         Title="CreateUpdateWindow" Height="400" Width="200
-        " ResizeMode="NoResize">
+        " ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"></ColumnDefinition>

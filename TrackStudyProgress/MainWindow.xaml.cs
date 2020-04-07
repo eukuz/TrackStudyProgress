@@ -93,9 +93,9 @@ namespace TrackStudyProgress
                 MessageBoxResult res = MessageBox.Show("Are you sure want to delete " + listOfListEls[index].SubjectName, "Sure?", MessageBoxButton.YesNo);
                 if (res == MessageBoxResult.Yes)
                 {
+                    DBExecutor.DeleteDBEntry(JsonConvert.SerializeObject(listOfListEls[index].Data));
                     listOfListEls.RemoveAt(index);
                     listBox.Items.RemoveAt(index);
-                    DBExecutor.DeleteDBEntry(JsonConvert.SerializeObject(listOfListEls[index].Data));
                 }
             }
         }
