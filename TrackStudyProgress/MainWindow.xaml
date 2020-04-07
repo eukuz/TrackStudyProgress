@@ -1,0 +1,32 @@
+﻿<Window x:Class="TrackStudyProgress.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrackStudyProgress"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid x:Name="mainGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <ListBox x:Name="listBox"></ListBox>
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Button x:Name="addNewElButton"  Click="addNewElButton_Click">Add Subject</Button>
+                <Button x:Name="modifyElButton" Grid.Row="1"  Click="modifyElButton_Click">Modify Subject</Button>
+                <Button x:Name="deleteElButton" Grid.Row="2"  Click="deleteElButton_Click">Delete Subject</Button>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>
