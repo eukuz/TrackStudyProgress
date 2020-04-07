@@ -15,20 +15,29 @@ namespace TrackStudyProgress
         TextBlock subjectNameTextBlock;
         TextBlock perDayTextBlock;
         StackPanel stackPanel;
-        StackPanel tapPanel;
         ProgressBar progressBar;
-        DateTime deadline;
-        int perDay, amountOfTopics, numberOfDoneTopics; //per day should be updated daily
-        string subjectName;
 
-        public ListEl(double listBoxWidth, int amountOfTopics, DateTime deadline, string subjectName) : this(listBoxWidth, amountOfTopics, deadline, subjectName, 0) { }
+        public ListElData Data { get; private set; }
+
         public ListEl(double listBoxWidth, int amountOfTopics, DateTime deadline, string subjectName, int numberOfDoneTopics)
         {
-            this.amountOfTopics = amountOfTopics;
-            this.deadline = deadline;
-            this.subjectName = subjectName;
-            this.numberOfDoneTopics = numberOfDoneTopics;
+            Data = new ListElData(deadline, amountOfTopics, numberOfDoneTopics, subjectName)
+            {
+                deadline = deadline,
+                subjectName = subjectName,
+                amountOfTopics = amountOfTopics,
+                numberOfDoneTopics = numberOfDoneTopics
+            };
+            Initialize(listBoxWidth);
+        }
+        public ListEl(double listBoxWidth, ListElData data)
+        {
+            Data = data;
+            Initialize(listBoxWidth);
+        }
 
+        private void Initialize(double listBoxWidth)
+        {
             BaseGrid = new Grid();
 
             Border border = new Border { BorderThickness = new Thickness(0, 0, 0, 0) };
@@ -42,13 +51,13 @@ namespace TrackStudyProgress
             BaseGrid.RowDefinitions.Add(new RowDefinition());
 
             subjectNameTextBlock = new TextBlock();
-            subjectNameTextBlock.Text = subjectName;
+            subjectNameTextBlock.Text = Data.subjectName;
             Grid.SetRow(subjectNameTextBlock, 0);
             Grid.SetColumn(subjectNameTextBlock, 0);
             BaseGrid.Children.Add(subjectNameTextBlock);
 
             perDayTextBlock = new TextBlock();
-            perDayTextBlock.Text = "Per day: " + PerDay;
+            UpdatePerDay();
             Grid.SetRow(perDayTextBlock, 0);
             Grid.SetColumn(perDayTextBlock, 1);
             BaseGrid.Children.Add(perDayTextBlock);
@@ -69,7 +78,7 @@ namespace TrackStudyProgress
             decreaseButton.Margin = new Thickness(0, 0, listBoxWidth * 0.005, 0);
 
             stackPanel.Children.Add(decreaseButton);
-            stackPanel.Children.Add(progressBar = new ProgressBar { Value = numberOfDoneTopics, Width = listBoxWidth * 0.88, Maximum = amountOfTopics });
+            stackPanel.Children.Add(progressBar = new ProgressBar { Value = Data.numberOfDoneTopics, Width = listBoxWidth * 0.88, Maximum = Data.amountOfTopics });
             stackPanel.Children.Add(increaseButton);
             Grid.SetRow(stackPanel, 1);
             Grid.SetColumn(stackPanel, 0);
@@ -77,66 +86,78 @@ namespace TrackStudyProgress
             BaseGrid.Children.Add(stackPanel);
         }
 
+
         public int AmountOfTopics
         {
-            get { return amountOfTopics; }
+            get { return Data.amountOfTopics; }
             set
             {
-                amountOfTopics = value;
+                Data.amountOfTopics = value;
                 UpdatePerDay();
             }
         }
 
         public DateTime Deadline
         {
-            get { return deadline; }
+            get { return Data.deadline; }
             set
             {
-                deadline = value;
+                Data.deadline = value;
                 UpdatePerDay();
             }
         }
         public string SubjectName
         {
-            get { return subjectName; }
+            get { return Data.subjectName; }
             set
             {
-                subjectName = value;
+                Data.subjectName = value;
                 subjectNameTextBlock.Text = value;
             }
         }
-        public int PerDay
-        {
-            get
-            {
-                UpdatePerDay();
-                return perDay;
-            }
-            set { perDay = value; }
-        }
         private void UpdatePerDay()
         {
-            TimeSpan time = deadline - DateTime.Now;
-            perDay = (int)Math.Ceiling((decimal)(amountOfTopics - numberOfDoneTopics) / (time.Days));
+            TimeSpan time = Data.deadline - DateTime.Now;
+            int perDay = (int)Math.Ceiling((decimal)(Data.amountOfTopics - Data.numberOfDoneTopics) / (time.Days));
             perDayTextBlock.Text = "Per day: " + perDay;
         }
 
         public int NumberOfDoneTopics
         {
-            get { return numberOfDoneTopics; }
+            get { return Data.numberOfDoneTopics; }
             set
             {
-                if (value >= 0 && value <= amountOfTopics)
+                if (value >= 0 && value <= Data.amountOfTopics)
                 {
+                    string oldData = Newtonsoft.Json.JsonConvert.SerializeObject(Data); 
                     progressBar.Value = value;
-                    numberOfDoneTopics = value;
+                    Data.numberOfDoneTopics = value;
+
                     UpdatePerDay();
+                    DBExecutor.ModifyDBEntry(oldData, Newtonsoft.Json.JsonConvert.SerializeObject(Data));
                 }
             }
         }
+
+
         private void DecreaseButton_Click(object sender, RoutedEventArgs e) => NumberOfDoneTopics -= 1;
         private void IncreaseButton_Click(object sender, RoutedEventArgs e) => NumberOfDoneTopics += 1;
     }
 
+    partial class ListElData
+    {
+        public DateTime deadline;
+        public int amountOfTopics, numberOfDoneTopics; //per day should be updated daily
+        public string subjectName;
 
+        public ListElData(DateTime deadline, int amountOfTopics, int numberOfDoneTopics, string subjectName)
+        {
+            this.deadline = deadline;
+            this.amountOfTopics = amountOfTopics;
+            this.numberOfDoneTopics = numberOfDoneTopics;
+            this.subjectName = subjectName;
+        }
+
+
+    }
 }

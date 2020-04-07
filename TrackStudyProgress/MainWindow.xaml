@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TrackStudyProgress"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Grid x:Name="mainGrid">
             <Grid.ColumnDefinitions>
@@ -21,10 +21,12 @@
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <!--<RowDefinition></RowDefinition>-->
                 </Grid.RowDefinitions>
                 <Button x:Name="addNewElButton"  Click="addNewElButton_Click">Add Subject</Button>
                 <Button x:Name="modifyElButton" Grid.Row="1"  Click="modifyElButton_Click">Modify Subject</Button>
                 <Button x:Name="deleteElButton" Grid.Row="2"  Click="deleteElButton_Click">Delete Subject</Button>
+                <!--<Button x:Name="readElButton" Grid.Row="3"  Click="readElButton_Click">Read</Button>-->
             </Grid>
 
         </Grid>
