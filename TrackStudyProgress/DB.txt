@@ -1,2 +1,2 @@
-{"deadline":"2020-04-11T00:00:00","amountOfTopics":10,"numberOfDoneTopics":2,"subjectName":"Test1"}
-{"deadline":"2020-04-23T00:00:00","amountOfTopics":100,"numberOfDoneTopics":18,"subjectName":"Test2"}
+{"deadline":"2020-05-11T00:00:00","amountOfTopics":10,"numberOfDoneTopics":9,"subjectName":"Test1"}
+{"deadline":"2020-05-23T00:00:00","amountOfTopics":100,"numberOfDoneTopics":18,"subjectName":"Test2"}

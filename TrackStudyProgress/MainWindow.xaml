@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TrackStudyProgress"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="400" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+        Title="Keep track of your learning process" Height="450" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid x:Name="mainGrid">
             <Grid.ColumnDefinitions>

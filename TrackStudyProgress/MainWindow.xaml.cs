@@ -90,14 +90,19 @@ namespace TrackStudyProgress
             else
             {
                 int index = listBox.SelectedIndex;
-                MessageBoxResult res = MessageBox.Show("Are you sure want to delete " + listOfListEls[index].SubjectName, "Sure?", MessageBoxButton.YesNo);
+                MessageBoxResult res = MessageBox.Show("Do you want to delete " + listOfListEls[index].SubjectName, "Sure?", MessageBoxButton.YesNo);
                 if (res == MessageBoxResult.Yes)
                 {
-                    DBExecutor.DeleteDBEntry(JsonConvert.SerializeObject(listOfListEls[index].Data));
-                    listOfListEls.RemoveAt(index);
-                    listBox.Items.RemoveAt(index);
+                    DeleteEl(index);
                 }
             }
+        }
+
+        public void DeleteEl(int index)
+        {
+            DBExecutor.DeleteDBEntry(JsonConvert.SerializeObject(listOfListEls[index].Data));
+            listOfListEls.RemoveAt(index);
+            listBox.Items.RemoveAt(index);
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {

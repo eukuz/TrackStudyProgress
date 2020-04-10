@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,17 +11,20 @@ namespace TrackStudyProgress
 {
     class ListEl
     {
+        static readonly string[] congrats = { "Brilliant job!", "Outstanding work!", "This is truly above and beyond.", "This is superb!", "You set a high bar with this one.", "Good work, as always.", "Thanks for getting this done.", "Perfect!", "Wonderful, this is more than I expected.", "Well done!", "You consistently bring your all and I truly appreciate that.", "I am so proud of you!" };
         public Grid BaseGrid { private set; get; }
 
         TextBlock subjectNameTextBlock;
         TextBlock perDayTextBlock;
         StackPanel stackPanel;
         ProgressBar progressBar;
+        //MainWindow parent;
 
         public ListElData Data { get; private set; }
 
-        public ListEl(double listBoxWidth, int amountOfTopics, DateTime deadline, string subjectName, int numberOfDoneTopics)
+        public ListEl(/*MainWindow mainWindow,*/double listBoxWidth, int amountOfTopics, DateTime deadline, string subjectName, int numberOfDoneTopics)
         {
+            //parent = mainWindow;
             Data = new ListElData(deadline, amountOfTopics, numberOfDoneTopics, subjectName)
             {
                 deadline = deadline,
@@ -30,8 +34,9 @@ namespace TrackStudyProgress
             };
             Initialize(listBoxWidth);
         }
-        public ListEl(double listBoxWidth, ListElData data)
+        public ListEl(/*MainWindow mainWindow,*/ double listBoxWidth, ListElData data)
         {
+            //parent = mainWindow;
             Data = data;
             Initialize(listBoxWidth);
         }
@@ -118,8 +123,15 @@ namespace TrackStudyProgress
         private void UpdatePerDay()
         {
             TimeSpan time = Data.deadline - DateTime.Now;
-            int perDay = (int)Math.Ceiling((decimal)(Data.amountOfTopics - Data.numberOfDoneTopics) / (time.Days));
-            perDayTextBlock.Text = "Per day: " + perDay;
+            if (time.Days > 0)
+            {
+                perDayTextBlock.Text = $"Per day: {(int)Math.Ceiling((decimal)(Data.amountOfTopics - Data.numberOfDoneTopics) / (time.Days))}";
+            }
+            else
+            {
+                perDayTextBlock.Text = "Deadline was missed!";
+            }
+
         }
 
         public int NumberOfDoneTopics
@@ -129,7 +141,7 @@ namespace TrackStudyProgress
             {
                 if (value >= 0 && value <= Data.amountOfTopics)
                 {
-                    string oldData = Newtonsoft.Json.JsonConvert.SerializeObject(Data); 
+                    string oldData = Newtonsoft.Json.JsonConvert.SerializeObject(Data);
                     progressBar.Value = value;
                     Data.numberOfDoneTopics = value;
 
@@ -141,7 +153,21 @@ namespace TrackStudyProgress
 
 
         private void DecreaseButton_Click(object sender, RoutedEventArgs e) => NumberOfDoneTopics -= 1;
-        private void IncreaseButton_Click(object sender, RoutedEventArgs e) => NumberOfDoneTopics += 1;
+        private void IncreaseButton_Click(object sender, RoutedEventArgs e)
+        {
+            NumberOfDoneTopics += 1;
+            if (NumberOfDoneTopics == AmountOfTopics)
+            {
+                Random random = new Random();
+                MessageBoxResult res = MessageBox.Show(congrats[random.Next(congrats.Length)] + "\r\nDo you want to finish this subject?", "Congrats!", MessageBoxButton.YesNo);
+                if (res == MessageBoxResult.Yes)
+                {
+                    ListBox listBox = BaseGrid.Parent as ListBox;
+                    (((listBox.Parent as Grid).Parent as Grid).Parent as MainWindow).DeleteEl(listBox.Items.IndexOf((BaseGrid)));
+                }
+
+            }
+        }
     }
 
     partial class ListElData
