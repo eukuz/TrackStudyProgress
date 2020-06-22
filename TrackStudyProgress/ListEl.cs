@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace TrackStudyProgress
 {
@@ -16,8 +17,10 @@ namespace TrackStudyProgress
 
         TextBlock subjectNameTextBlock;
         TextBlock perDayTextBlock;
+        TextBlock progressTextBlock;
         StackPanel stackPanel;
         ProgressBar progressBar;
+
         //MainWindow parent;
 
         public ListElData Data { get; private set; }
@@ -83,7 +86,21 @@ namespace TrackStudyProgress
             decreaseButton.Margin = new Thickness(0, 0, listBoxWidth * 0.005, 0);
 
             stackPanel.Children.Add(decreaseButton);
-            stackPanel.Children.Add(progressBar = new ProgressBar { Value = Data.numberOfDoneTopics, Width = listBoxWidth * 0.88, Maximum = Data.amountOfTopics });
+            Grid progressGrid = new Grid();
+            progressBar = new ProgressBar { Value = Data.numberOfDoneTopics, Width = listBoxWidth * 0.88, Maximum = Data.amountOfTopics };
+            Grid.SetColumn(progressBar,0);
+            Grid.SetRow(progressBar,0);
+            progressTextBlock = new TextBlock();
+            progressTextBlock.Text = $"{progressBar.Value}/{progressBar.Maximum}";
+            progressTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            progressTextBlock.VerticalAlignment = VerticalAlignment.Center;
+            progressTextBlock.Foreground = Brushes.Black;
+            Grid.SetColumn(progressTextBlock, 0);
+            Grid.SetRow(progressTextBlock, 0);
+            progressGrid.Children.Add(progressBar);
+            progressGrid.Children.Add(progressTextBlock);
+
+            stackPanel.Children.Add(progressGrid);
             stackPanel.Children.Add(increaseButton);
             Grid.SetRow(stackPanel, 1);
             Grid.SetColumn(stackPanel, 0);
@@ -143,6 +160,7 @@ namespace TrackStudyProgress
                 {
                     string oldData = Newtonsoft.Json.JsonConvert.SerializeObject(Data);
                     progressBar.Value = value;
+                    progressTextBlock.Text = $"{progressBar.Value}/{progressBar.Maximum}";
                     Data.numberOfDoneTopics = value;
 
                     UpdatePerDay();
